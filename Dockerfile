@@ -1,15 +1,15 @@
 # Use the Open Liberty image as the base
-FROM openliberty/open-liberty:kernel-java11-openj9
+FROM open-liberty:24.0.0.12-full-java17-openj9
+
+
+# Copy the Spring Boot application JAR to the container
+COPY build/libs/demo-0.0.1-SNAPSHOT.jar /config/apps/
 
 # Copy Open Liberty server.xml configuration
 COPY src/main/liberty/config/server.xml /config/
 
-# Copy the Spring Boot application JAR to the container
-COPY build/libs/demo-0.0.1-SNAPSHOT.jar /config/apps
-
-# Install necessary Liberty features
-RUN features.sh install springBoot-3.0 mpHealth-3.1
-
+# Enable required Liberty features
+RUN /opt/ol/wlp/bin/server featureManager install --acceptLicense --features springBoot-3.0
 
 # Expose ports for HTTP and HTTPS
 EXPOSE 9080 9443
