@@ -1,27 +1,3 @@
-
-#LOCAL
-# # Use the Open Liberty image as the base
-# FROM open-liberty:24.0.0.12-full-java17-openj9
-
-
-# # Copy the Spring Boot application JAR to the container
-# COPY build/libs/demo-0.0.1-SNAPSHOT.jar /config/apps/
-
-# # Copy Open Liberty server.xml configuration
-# COPY src/main/liberty/config/server.xml /config/
-
-# # Enable required Liberty features
-# RUN /opt/ol/wlp/bin/server featureManager install --acceptLicense --features springBoot-3.0
-
-# # Expose ports for HTTP and HTTPS
-# EXPOSE 9080 9443
-
-# # Default command to start Open Liberty
-# CMD ["/opt/ol/wlp/bin/server", "run", "defaultServer"]
-
-#END LOCAL
-
-
 # Stage 1: Build the Spring Boot JAR using Gradle
 FROM gradle:7.6-jdk17 AS build
 
@@ -33,6 +9,9 @@ COPY gradlew gradlew.bat /app/
 COPY gradle /app/gradle
 COPY build.gradle /app/
 COPY settings.gradle /app/
+
+# Ensure gradlew has execute permission
+RUN chmod +x gradlew
 
 # Copy the rest of the application code
 COPY src /app/src
